@@ -36,6 +36,7 @@ modules.builtin
 Module.symvers
 *.dwo
 kernel.sh
+/out
 
 #
 # Top-level generic files
