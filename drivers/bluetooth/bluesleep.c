@@ -92,7 +92,10 @@ enum {
 	DEBUG_VERBOSE = 1U << 3,
 };
 
-static int debug_mask = 0; // DEBUG_USER_STATE | DEBUG_SUSPEND | DEBUG_BTWAKE | DEBUG_VERBOSE;
+static int wl_divide = 4;
+module_param(wl_divide, int, 0644);
+
+static int debug_mask = DEBUG_USER_STATE;
 module_param_named(debug_mask, debug_mask, int, S_IRUGO | S_IWUSR | S_IWGRP);
 
 struct bluesleep_info {
@@ -346,7 +349,7 @@ static void bluesleep_sleep_work(struct work_struct *work)
 			/* UART clk is not turned off immediately. Release
 			 * wakelock after 500 ms.
 			 */
-			wake_lock_timeout(&bsi->wake_lock, HZ / 2);
+			wake_lock_timeout(&bsi->wake_lock, HZ / wl_divide);
 			clear_bit(BT_ASLEEPING, &flags);
 		} else {
 			clear_bit(BT_ASLEEPING, &flags);
@@ -707,11 +710,12 @@ static void bluesleep_stop(void)
 
 	atomic_inc(&open_count);
 
-#if BT_ENABLE_IRQ_WAKE
+	#if BT_ENABLE_IRQ_WAKE
 	if (disable_irq_wake(bsi->host_wake_irq))
 		pr_err("Couldn't disable hostwake IRQ wakeup mode\n");
-#endif
-	wake_lock_timeout(&bsi->wake_lock, HZ / 2);
+	#endif
+	
+	wake_lock_timeout(&bsi->wake_lock, HZ / wl_divide);
 }
 /**
  * Read the <code>BT_WAKE</code> GPIO pin value via the proc interface.
