@@ -37,6 +37,8 @@ Module.symvers
 *.dwo
 kernel.sh
 /out
+clean.sh
+fw.sh
 
 #
 # Top-level generic files
