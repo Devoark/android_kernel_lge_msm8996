@@ -523,18 +523,6 @@ struct ion_handle *ion_handle_get_by_id(struct ion_client *client,
 	return handle;
 }
 
-struct ion_handle *ion_handle_get_by_id(struct ion_client *client,
-						int id)
-{
-	struct ion_handle *handle;
-
-	mutex_lock(&client->lock);
-	handle = ion_handle_get_by_id_nolock(client, id);
-	mutex_unlock(&client->lock);
-
-	return handle;
-}
-
 static bool ion_handle_validate(struct ion_client *client,
 				struct ion_handle *handle)
 {
@@ -1544,7 +1532,7 @@ static unsigned int ion_ioctl_dir(unsigned int cmd)
 	case ION_IOC_SYNC:
 	case ION_IOC_FREE:
 	case ION_IOC_CUSTOM:
-		return _IOC_WRITE;
+	return _IOC_WRITE;
 	default:
 		return _IOC_DIR(cmd);
 	}
