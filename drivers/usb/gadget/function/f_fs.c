@@ -3598,7 +3598,7 @@ static void ffs_closed(struct ffs_data *ffs)
 	ci = opts->func_inst.group.cg_item.ci_parent->ci_parent;
 	ffs_dev_unlock();
 
-	unregister_gadget_item(ci);
+	//unregister_gadget_item(ci);
 	return;
 done:
 	ffs_dev_unlock();
