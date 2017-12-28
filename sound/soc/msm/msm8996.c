@@ -38,7 +38,7 @@
 #include "../codecs/wcd9335.h"
 #include "../codecs/wsa881x.h"
 
-#ifdef CONFIG_SND_SOC_ES9018
+#ifdef CONFIG_SND_SOC_ES9218
 #ifdef CONFIG_LGE_PM_LGE_POWER_CLASS_BOARD_REVISION
 #include <soc/qcom/lge/power/lge_board_revision.h>
 #include <soc/qcom/lge/power/lge_power_class.h>
@@ -105,7 +105,7 @@ static int msm_quat_mi2s_tx_ch = 2;
 #endif
 #if defined(CONFIG_SND_SOC_ES9218P)
 bool enable_es9218p = false;
-#elif defined(CONFIG_SND_SOC_ES9018)
+#elif defined(CONFIG_SND_SOC_ES9218)
 bool enable_es9218p = true;
 #endif
 
@@ -270,7 +270,7 @@ static struct wcd_mbhc_config wcd_mbhc_cfg = {
 	.key_code[6] = 0,
 	.key_code[7] = 0,
 	.linein_th = 5000,
-#ifdef CONFIG_SND_SOC_ES9018
+#ifdef CONFIG_SND_SOC_ES9218
 	.moist_cfg = { false, false },
 #else
 	.moist_cfg = { V_45_MV, I_3P0_UA },
@@ -2446,7 +2446,7 @@ static void *def_tasha_mbhc_cal(void)
 
 #define S(X, Y) ((WCD_MBHC_CAL_PLUG_TYPE_PTR(tasha_wcd_cal)->X) = (Y))
 	S(v_hs_max, 1500);
-#if defined(CONFIG_SND_SOC_ES9218P) || defined(CONFIG_SND_SOC_ES9018)
+#if defined(CONFIG_SND_SOC_ES9218P) || defined(CONFIG_SND_SOC_ES9218)
 	if(enable_es9218p){
 		S(v_hs_max, 2800);
 		pr_info("%s: set v_hs_max as 2800 installed es9218p chip\n", __func__);
@@ -3927,7 +3927,7 @@ static struct snd_soc_dai_link msm8996_lge_dai_links[] = {
 		.be_id = MSM_FRONTEND_DAI_MULTIMEDIA2,
 	},
 #endif	/* CONFIG_SND_LGE_DSDP_DUAL_AUDIO */
-#if defined(CONFIG_SND_USE_SEC_MI2S) && defined(CONFIG_SND_SOC_ES9018)
+#if defined(CONFIG_SND_USE_SEC_MI2S) && defined(CONFIG_SND_SOC_ES9218)
 	{
 		.name = LPASS_BE_SEC_MI2S_RX,
 		.stream_name = "Secondary MI2S Playback",
@@ -4329,7 +4329,7 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 			}
 			card->num_links = LGE_DAI_LINK_ID_BASE;
 		}
-#ifdef CONFIG_SND_SOC_ES9018
+#ifdef CONFIG_SND_SOC_ES9218
 		enable_es9218p = true;
 		if (!strcmp(msm8996_lge_dai_links[3].codec_name, "es9018-codec.6-0048"))
 			   msm8996_lge_dai_links[3].codec_name = "es9018-codec.3-0048";

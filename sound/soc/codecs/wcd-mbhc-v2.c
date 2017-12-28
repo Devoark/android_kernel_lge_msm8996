@@ -32,7 +32,7 @@
 
 #define HDSET_FACTORY
 
-#if defined(CONFIG_SND_SOC_ES9018)|| defined(CONFIG_SND_SOC_ES9218P)
+#if defined(CONFIG_SND_SOC_ES9218)|| defined(CONFIG_SND_SOC_ES9218P)
 #ifdef CONFIG_SND_SOC_ES9218P
 #define SKIP_RECALC_IMPED
 #if defined(SKIP_RECALC_IMPED)  // defensive code
@@ -272,7 +272,7 @@ static void wcd_mbhc_jack_report(struct wcd_mbhc *mbhc,
 	if ((mask == WCD_MBHC_JACK_MASK) &&
 	    !(status & (SND_JACK_OC_HPHL | SND_JACK_OC_HPHR))){
 		switch_set_state(&mbhc->sdev, switch_device);
-#if defined(CONFIG_SND_SOC_ES9018)|| defined(CONFIG_SND_SOC_ES9218P)
+#if defined(CONFIG_SND_SOC_ES9218)|| defined(CONFIG_SND_SOC_ES9218P)
 		if(enable_es9218p) {
 			if (status == 0)
 				es9218_sabre_headphone_off();
@@ -951,7 +951,7 @@ static void wcd_mbhc_report_plug(struct wcd_mbhc *mbhc, int insertion,
 		}
 
 		mbhc->hph_status |= jack_type;
-#if defined(CONFIG_SND_SOC_ES9018)|| defined(CONFIG_SND_SOC_ES9218P)
+#if defined(CONFIG_SND_SOC_ES9218)|| defined(CONFIG_SND_SOC_ES9218P)
 		if (enable_es9218p)
 			es9218_sabre_headphone_on();
 #endif
@@ -2037,7 +2037,7 @@ static irqreturn_t wcd_mbhc_mech_plug_detect_irq(int irq, void *data)
 		r = IRQ_NONE;
 	} else {
 		/* Call handler */
-#if defined(CONFIG_SND_SOC_ES9018)|| defined(CONFIG_SND_SOC_ES9218P)
+#if defined(CONFIG_SND_SOC_ES9218)|| defined(CONFIG_SND_SOC_ES9218P)
 // Temp for ES9218 RevA
 		if (enable_es9218p)
         		es9218_sabre_headphone_on();

@@ -837,7 +837,7 @@ static const struct tasha_reg_mask_val tasha_spkr_mode1[] = {
 	{WCD9335_CDC_BOOST1_BOOST_CTL, 0x7C, 0x44},
 };
 
-#if defined(CONFIG_SND_SOC_ES9018)|| defined(CONFIG_SND_SOC_ES9218P)
+#if defined(CONFIG_SND_SOC_ES9218)|| defined(CONFIG_SND_SOC_ES9218P)
 extern bool enable_es9218p;
 #endif
 
@@ -1311,7 +1311,7 @@ static void tasha_mbhc_hph_l_pull_up_control(struct snd_soc_codec *codec,
 
 	if (TASHA_IS_2_0(tasha->wcd9xxx->version))
 	{
-#if defined(CONFIG_SND_SOC_ES9018)||defined(CONFIG_SND_SOC_ES9218P)
+#if defined(CONFIG_SND_SOC_ES9218)||defined(CONFIG_SND_SOC_ES9218P)
 		if(enable_es9218p)
 			snd_soc_update_bits(codec, WCD9335_MBHC_PLUG_DETECT_CTL, 0xC0, 0xC0);
 		else
@@ -1807,7 +1807,7 @@ static void tasha_wcd_mbhc_calc_impedance(struct wcd_mbhc *mbhc, uint32_t *zl,
 	bool is_fsm_disable = false;
 	bool is_change = false;
 
-#ifdef CONFIG_SND_SOC_ES9018
+#ifdef CONFIG_SND_SOC_ES9218
 	struct tasha_mbhc_zdet_param zdet_param[] = {
 		{4, 0, 4, 0x08, 0x14, 0x18}, /* < 32ohm */
 		{2, 0, 3, 0x18, 0x7C, 0x90}, /* 32ohm < Z < 400ohm */
