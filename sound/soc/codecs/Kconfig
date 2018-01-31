@@ -102,7 +102,6 @@ config SND_SOC_ALL_CODECS
 	select SND_SOC_TAS2552 if I2C
 	select SND_SOC_TAS5086 if I2C
 	select SND_SOC_ES9018 if I2C
-	select SND_SOC_ES9218 if I2C
 	select SND_SOC_ES9218P if I2C
 	select SND_SOC_TLV320AIC23_I2C if I2C
 	select SND_SOC_TLV320AIC23_SPI if SPI_MASTER
@@ -574,11 +573,6 @@ config SND_SOC_STAC9766
 
 config SND_SOC_ES9018
 	tristate "es9018 Hi-Fi headphones amp"
-	depends on MACH_LGE
-	default n
-
-config SND_SOC_ES9218
-	tristate "es9218 Hi-Fi headphones amp"
 	depends on MACH_LGE
 	default n
 
