@@ -651,15 +651,10 @@ static int es9218_sabre_amp_stop(struct i2c_client *client, int headset)
 {
 	int ret = 0;
 	switch(headset) {
-				 case 1:
-					//	normal
-					//
-					//	Low impedance 32RZ or less headphone detected
-					//	Use HiFi1 amplifier mode
-					//
-					pr_err("%s() : 1 valid headset = %d \n", __func__, g_headset_type);
-					es9218_sabre_hifione2lpb();
-					
+			
+				case 1:
+					pr_err("%s() : Invalid headset = %d \n", __func__, g_headset_type);
+					ret = 1;
 					break;
 	
 				case 2:
@@ -683,9 +678,15 @@ static int es9218_sabre_amp_stop(struct i2c_client *client, int headset)
 					es9218_sabre_hifitwo2lpb();
 					break;
 	
-				default :
-					pr_err("%s() : Invalid headset = %d \n", __func__, g_headset_type);
-					ret = 1;
+				 default :
+					//	normal
+					//
+					//	Low impedance 32RZ or less headphone detected
+					//	Use HiFi1 amplifier mode
+					//
+					pr_err("%s() : 1 valid headset = %d \n", __func__, g_headset_type);
+					es9218_sabre_hifione2lpb();
+					
 					break;
 			}
 	return ret;
@@ -1293,7 +1294,8 @@ static int __es9218_sabre_headphone_on(void)
 
 		es9218_power_state = ESS_PS_BYPASS;
 		return 0;
-	} 
+	}
+	
 	else if (es9218_power_state == ESS_PS_BYPASS &&	es9218_is_amp_on) {
 		pr_info("%s() : state = %s , is_amp_on = %d \n",	__func__, power_state[es9218_power_state], es9218_is_amp_on);
 		es9218_sabre_bypass2hifi();
@@ -1765,6 +1767,10 @@ static int es9218_sabre_wcdon2bypass_put(struct snd_kcontrol *kcontrol,
 
 
 	ret = (int)ucontrol->value.integer.value[0];
+	
+	if (es9218_power_state == ESS_PS_BYPASS) {
+		es9218_is_amp_on = 1;
+	}
 
 	pr_info("%s(): entry wcd on : %d \n ", __func__ , ret);
 
@@ -1779,8 +1785,8 @@ static int es9218_sabre_wcdon2bypass_put(struct snd_kcontrol *kcontrol,
             pr_info("%s() : state = %s : don't change\n", __func__, power_state[es9218_power_state]);
         }
     }else{
-        if ( es9218_power_state > ESS_PS_BYPASS ) {
-    //  if ( es9218_power_state == ESS_PS_IDLE ) {
+     //  if ( es9218_power_state > ESS_PS_BYPASS ) {
+     if ( es9218_power_state == ESS_PS_IDLE ) {
             pr_info("%s() : state = %s : WCD On State HiFi -> ByPass !!\n", __func__, power_state[es9218_power_state]);
             cancel_delayed_work_sync(&g_es9218_priv->sleep_work);
             es9218_sabre_hifi2bypass();
