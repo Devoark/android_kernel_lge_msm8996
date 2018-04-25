@@ -35,6 +35,11 @@
 modules.builtin
 Module.symvers
 *.dwo
+clean.sh
+fw.sh
+kernel.sh
+make.sh
+out/*
 
 #
 # Top-level generic files
