@@ -647,14 +647,20 @@ static int es9218_sabre_amp_start(struct i2c_client *client, int headset)
 	return ret;
 }
 
+
 static int es9218_sabre_amp_stop(struct i2c_client *client, int headset)
 {
 	int ret = 0;
 	switch(headset) {
-			
-				case 1:
-					pr_err("%s() : Invalid headset = %d \n", __func__, g_headset_type);
-					ret = 1;
+				 case 1:
+					//	normal
+					//
+					//	Low impedance 32RZ or less headphone detected
+					//	Use HiFi1 amplifier mode
+					//
+					pr_err("%s() : 1 valid headset = %d \n", __func__, g_headset_type);
+					es9218_sabre_hifione2lpb();
+					
 					break;
 	
 				case 2:
@@ -678,15 +684,9 @@ static int es9218_sabre_amp_stop(struct i2c_client *client, int headset)
 					es9218_sabre_hifitwo2lpb();
 					break;
 	
-				 default :
-					//	normal
-					//
-					//	Low impedance 32RZ or less headphone detected
-					//	Use HiFi1 amplifier mode
-					//
-					pr_err("%s() : 1 valid headset = %d \n", __func__, g_headset_type);
-					es9218_sabre_hifione2lpb();
-					
+				default :
+					pr_err("%s() : Invalid headset = %d \n", __func__, g_headset_type);
+					ret = 1;
 					break;
 			}
 	return ret;
@@ -1268,6 +1268,8 @@ static int __es9218_sabre_headphone_on(void)
 
 	pr_info("%s(): entry: state = %s\n", __func__, power_state[es9218_power_state]);
 
+	g_headset_type = 1;
+	
 	if (es9218_power_state == ESS_PS_CLOSE)	{
 		if(g_ess_rev == ESS_A) {
 			pr_info("%s() : ESS_A Running !! \n", __func__);
@@ -1320,9 +1322,15 @@ static int __es9218_sabre_headphone_off(void)
 
 	if ( es9218_power_state != ESS_PS_BYPASS ||
 		es9218_power_state != ESS_PS_IDLE) {
+	if (es9218_power_state == ESS_PS_HIFI) {
+			es9218_is_amp_on = 0;
+		}
 		es9218_sabre_hifi2bypass(); // if power state indicates chip is in HiFi mode, move to Low Power Bypass
+
 	}
 	pr_info("%s() : state = %d\n", __func__, es9218_power_state);
+	
+	g_headset_type = 0;
 	
 	es9218_sabre_chargepump_stop();
 
@@ -1330,6 +1338,8 @@ static int __es9218_sabre_headphone_off(void)
 	//es9218_power_gpio_L(); // power off
 
 	es9218_power_state = ESS_PS_CLOSE;
+	
+
 	return 0;
 }
 
@@ -1469,7 +1479,7 @@ static int es9218_aux_harmonic_comp_put(struct snd_kcontrol *kcontrol,
 static int es9218_headset_type_get(struct snd_kcontrol *kcontrol,
 		struct snd_ctl_elem_value *ucontrol)
 {
-	ucontrol->value.integer.value[0] = g_headset_type;
+	//ucontrol->value.integer.value[0] = g_headset_type;
 
 	pr_info("%s(): type = %d \n", __func__, g_headset_type);
 
@@ -1767,13 +1777,13 @@ static int es9218_sabre_wcdon2bypass_put(struct snd_kcontrol *kcontrol,
 
 
 	ret = (int)ucontrol->value.integer.value[0];
-	
+
+	pr_info("%s(): entry wcd on : %d \n ", __func__ , ret);
+		
 	if (es9218_power_state == ESS_PS_BYPASS) {
 		es9218_is_amp_on = 1;
 	}
-
-	pr_info("%s(): entry wcd on : %d \n ", __func__ , ret);
-
+	
 	if(ret==0)
 	{
         if(es9218_is_amp_on){
@@ -1781,12 +1791,12 @@ static int es9218_sabre_wcdon2bypass_put(struct snd_kcontrol *kcontrol,
     		es9218_sabre_bypass2hifi();
             pr_info("%s() : state = %s : WCD On State ByPass -> HiFi !!\n", __func__, power_state[es9218_power_state]);
         }
-        else{
+        else if (es9218_power_state == ESS_PS_HIFI){
             pr_info("%s() : state = %s : don't change\n", __func__, power_state[es9218_power_state]);
         }
-    }else{
-     //  if ( es9218_power_state > ESS_PS_BYPASS ) {
-     if ( es9218_power_state == ESS_PS_IDLE ) {
+    } else {
+     		if ( es9218_power_state < ESS_PS_BYPASS ) {
+        //  if ( es9218_power_state == ESS_PS_IDLE ) {
             pr_info("%s() : state = %s : WCD On State HiFi -> ByPass !!\n", __func__, power_state[es9218_power_state]);
             cancel_delayed_work_sync(&g_es9218_priv->sleep_work);
             es9218_sabre_hifi2bypass();
@@ -1799,8 +1809,8 @@ static int es9218_sabre_wcdon2bypass_put(struct snd_kcontrol *kcontrol,
 	pr_info("%s(): exit\n", __func__);
 
 	mutex_unlock(&g_es9218_priv->power_lock);
-
-	return 0;
+ 	
+	return 0; 
 }
 
 static int es9218_clk_divider_get(struct snd_kcontrol *kcontrol,
