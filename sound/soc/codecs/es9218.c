@@ -1795,21 +1795,20 @@ static int es9218_sabre_wcdon2bypass_put(struct snd_kcontrol *kcontrol,
             pr_info("%s() : state = %s : don't change\n", __func__, power_state[es9218_power_state]);
         }
     } else {
-     		if ( es9218_power_state < ESS_PS_BYPASS ) {
+     	/*if ( es9218_power_state < ESS_PS_BYPASS ) 
         //  if ( es9218_power_state == ESS_PS_IDLE ) {
             pr_info("%s() : state = %s : WCD On State HiFi -> ByPass !!\n", __func__, power_state[es9218_power_state]);
             cancel_delayed_work_sync(&g_es9218_priv->sleep_work);
             es9218_sabre_hifi2bypass();
             es9218_is_amp_on = 0;
-        } 
-        else {
+         */
             pr_info("%s() : Invalid state = %s !!\n", __func__, power_state[es9218_power_state]);
-        }
+        
 	}
 	pr_info("%s(): exit\n", __func__);
 
 	mutex_unlock(&g_es9218_priv->power_lock);
- 	
+	
 	return 0; 
 }
 
