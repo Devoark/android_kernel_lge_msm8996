@@ -4500,6 +4500,10 @@ static int msm_compr_probe(struct snd_soc_platform *platform)
 
 	snd_soc_add_platform_controls(platform, msm_compr_gapless_controls,
 				      ARRAY_SIZE(msm_compr_gapless_controls));
+#if defined(CONFIG_SND_LGE_EFFECT) || defined(CONFIG_SND_LGE_NORMALIZER) || defined(CONFIG_SND_LGE_MABL)
+	snd_soc_add_platform_controls(platform,msm_compr_lge_effect_controls,
+				      ARRAY_SIZE(msm_compr_lge_effect_controls));	
+#endif
 
 	rc =  of_property_read_string(platform->dev->of_node,
 		"qcom,adsp-version", &qdsp_version);

@@ -431,15 +431,15 @@ static int regmap_bus_gather_write(void *context,
 	int ret, i;
 
 	if (!wcd9xxx) {
-		dev_err(dev, "%s: wcd9xxx is NULL\n", __func__);
+		pr_info("%s: wcd9xxx is NULL\n", __func__);
 		return -EINVAL;
 	}
 	if (!reg || !val) {
-		dev_err(dev, "%s: reg or val is NULL\n", __func__);
+		pr_info("%s: reg or val is NULL\n", __func__);
 		return -EINVAL;
 	}
 	if (reg_size != REG_BYTES) {
-		dev_err(dev, "%s: register size %zd bytes, not supported\n",
+		pr_info("%s: register size %zd bytes, not supported\n",
 			__func__, reg_size);
 		return -EINVAL;
 	}
@@ -456,13 +456,13 @@ static int regmap_bus_gather_write(void *context,
 		goto err;
 
 	for (i = 0; i < val_size; i++)
-		dev_dbg(dev, "Write %02x to 0x%x\n", ((u8 *)val)[i],
+		pr_info("Write %02x to 0x%x\n", ((u8 *)val)[i],
 			rreg + i);
 
 	ret = wcd9xxx->write_dev(wcd9xxx, c_reg, val_size, (void *) val,
 				 false);
 	if (ret < 0)
-		dev_err(dev, "%s: Codec write failed (%d), reg:0x%x, size:%zd\n",
+		pr_info("%s: Codec write failed (%d), reg:0x%x, size:%zd\n",
 			__func__, ret, rreg, val_size);
 
 err:
