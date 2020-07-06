@@ -86,6 +86,11 @@ ifeq ($(CONFIG_MACH_MSM8996_ELSA_NAO_US),y)
 DTS_TARGET := msm8996-elsa_nao_us
 endif
 
+#For us cellular models
+ifeq ($(CONFIG_MACH_MSM8996_ELSA_NAO_US_SANTA),y)
+DTS_TARGET := msm8996-elsa_nao_us_santa
+endif
+
 ifeq ($(CONFIG_MACH_MSM8996_ELSA_GLOBAL_COM),y)
 DTS_TARGET := msm8996-elsa_global_com
 endif
